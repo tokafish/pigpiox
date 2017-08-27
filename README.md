@@ -21,7 +21,54 @@ def deps(target) do
 
 # Usage
 
-Usage instructions available on [hexdocs](https://hexdocs.pm/pigpiox/). In particular, look at the `Pigpiox.GPIO` module.
+Adding pigpiox as a dependency to your system will automatically launch the pigpio daemon and open a socket to communicate with it. To interact with pigpiod, Pigpiox provides various modules exposing different areas of functionality:
+
+## GPIO
+
+### Basic functionality
+
+The `Pigpiox.GPIO` provides basic GPIO functionality. Here's an example of reading and writing a GPIO:
+
+```elixir
+gpio = 17
+
+Pigpiox.GPIO.set_mode(gpio, :input)
+{:ok, level} = Pigpiox.GPIO.read(gpio)
+
+Pigpiox.GPIO.set_mode(gpio, :output)
+Pigpiox.GPIO.write(gpio, 1)
+```
+
+### Watching a GPIO
+
+When reading a GPIO, often it's useful to know immediately when its level changes, instead of having to constantly poll it. Here's an example:
+
+```elixir
+{:ok, pid} = Pigpiox.GPIO.watch(gpio)
+```
+
+After setting up a watch on a GPIO pin, the calling process will receive messages of the format `{:gpio_leveL_change, gpio, level}` as its level change.
+
+## Waveforms
+
+The `Pigpiox.Waveform` module provides functions that allow you to create and send waveforms on the Raspberry Pi. Here's an example of pulsing a GPIO on and off every 500ms:
+
+```elixir
+pulses = [
+  %Pigpiox.Waveform.Pulse{gpio_on: gpio, delay: 500000},
+  %Pigpiox.Waveform.Pulse{gpio_off: gpio, delay: 500000}
+]
+
+Pigpiox.Waveform.add_generic(pulses)
+
+{:ok, wave_id} = Pigpiox.Waveform.create()
+
+Pigpiox.GPIO.set_mode(gpio, :output)
+
+Pigpiox.Waveform.repeat(wave_id)
+```
+
+All documentation available on [hexdocs](https://hexdocs.pm/pigpiox/).
 
 # Contributions
 
