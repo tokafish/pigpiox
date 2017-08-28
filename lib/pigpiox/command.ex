@@ -12,6 +12,22 @@ defmodule Pigpiox.Command do
     notify_pause:           20,
     notify_close:           21,
     get_servo_pulsewidth:   84,
+
+    waveform_clear_all:     27,
+    waveform_add_generic:   28,
+    waveform_add_serial:    29,
+    waveform_busy: 32,
+    waveform_stop: 33,
+    waveform_get_micros: 34,
+    waveform_get_pulses: 35,
+    waveform_get_cbs: 36,
+    waveform_create: 49,
+    waveform_delete: 50,
+    waveform_transmit_once: 51,
+    waveform_transmit_repeat: 52,
+    waveform_chain: 93,
+    waveform_transmit_mode: 100,
+    waveform_current: 101
   }
   @command_names Map.keys(@commands)
 
