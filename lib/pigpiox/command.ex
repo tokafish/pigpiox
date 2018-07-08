@@ -6,6 +6,7 @@ defmodule Pigpiox.Command do
     get_mode:               1,
     gpio_read:              3,
     gpio_write:             4,
+    pwm:                    5,
     set_servo_pulsewidth:   8,
     notify_open:            18,
     notify_begin:           19,

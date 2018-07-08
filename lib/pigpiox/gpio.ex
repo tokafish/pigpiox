@@ -112,4 +112,15 @@ defmodule Pigpiox.GPIO do
       error -> error
     end
   end
+
+  @doc """
+  Sets PWM pulses for pin. Available range 0..250
+  """
+  @spec set_pwm(pin :: integer, width :: non_neg_integer) :: :ok | {:error, atom}
+  def set_pwm(pin, width) when width >= 0 and width <= 250 do
+    case Pigpiox.Socket.command(:pwm, pin, width) do
+      {:ok, _} -> :ok
+      error -> error
+    end
+  end
 end
