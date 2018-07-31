@@ -12,7 +12,7 @@ defmodule Pigpiox.Command do
     notify_pause:           20,
     notify_close:           21,
     get_servo_pulsewidth:   84,
-
+    hardware_pwm:           86,
     waveform_clear_all:     27,
     waveform_add_generic:   28,
     waveform_add_serial:    29,
@@ -27,7 +27,15 @@ defmodule Pigpiox.Command do
     waveform_transmit_repeat: 52,
     waveform_chain: 93,
     waveform_transmit_mode: 100,
-    waveform_current: 101
+    waveform_current: 101,
+
+    get_PWM_dutycycle: 83,
+    get_PWM_frequency: 23,
+    set_PWM_frequency: 7,
+    get_PWM_range: 22,
+    set_PWM_range: 6,
+
+    gpio_PWM: 5,
   }
   @command_names Map.keys(@commands)
 
