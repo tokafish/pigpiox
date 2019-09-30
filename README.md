@@ -68,6 +68,14 @@ Pigpiox.GPIO.set_mode(gpio, :output)
 Pigpiox.Waveform.repeat(wave_id)
 ```
 
+## Clock
+
+The `Pigpiox.Clock` module provides functions that allow you to set a clock on reserved pin.
+
+```elixir
+Pigpiox.Clock.hardware_clk(gpio, 2_500_000)
+```
+
 All documentation available on [hexdocs](https://hexdocs.pm/pigpiox/).
 
 # Contributions

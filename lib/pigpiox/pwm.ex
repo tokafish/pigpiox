@@ -1,7 +1,7 @@
 defmodule Pigpiox.Pwm do
   use Bitwise
 
-  defdelegate set_pwm_dutycycle, to: __MODULE__, as: :gpio_pwm
+  defdelegate set_pwm_dutycycle(pin, level), to: __MODULE__, as: :gpio_pwm
 
   @moduledoc """
   Build and send waveforms with pigpiod.

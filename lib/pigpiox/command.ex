@@ -12,6 +12,7 @@ defmodule Pigpiox.Command do
     notify_pause:           20,
     notify_close:           21,
     get_servo_pulsewidth:   84,
+    hardware_clk:           85,
     hardware_pwm:           86,
     waveform_clear_all:     27,
     waveform_add_generic:   28,
