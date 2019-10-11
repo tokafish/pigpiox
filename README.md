@@ -1,6 +1,7 @@
 # Pigpiox
 
-Pigpiox is a wrapper around pigpiod for the Raspberry Pi. For all of pigpio's features, check out its [documentation](http://abyz.co.uk/rpi/pigpio/index.html).
+Pigpiox is a wrapper around pigpiod for the Raspberry Pi. For all of pigpio's features, check out its [documentation](http://abyz.me.uk/rpi/pigpio/).
+
 
 # Requirements
 
