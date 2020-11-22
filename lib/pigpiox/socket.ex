@@ -6,6 +6,9 @@ defmodule Pigpiox.Socket do
   Pigpiox.Socket provides an interface to send commands to a running pigpio daemon started by `Pigpiox.Port`
   """
 
+  @default_hostname 'localhost'
+  @default_port 8888
+
   @typep state :: :gen_tcp.socket
 
   @typedoc """
@@ -70,9 +73,11 @@ defmodule Pigpiox.Socket do
 
   @spec attempt_connection(retries :: non_neg_integer) :: {:ok, :gen_tcp.socket} | {:error, :could_not_connect}
   defp attempt_connection(num_retries) when num_retries > 0 do
-    _ = Logger.debug "Pigpiox.Socket: connecting to pigpiod"
+    hostname = Application.get_env(:pigpiox, :hostname, @default_hostname)
+    port = Application.get_env(:pigpiox, :port, @default_port)
+    _ = Logger.debug("Pigpiox.Socket: connecting to pigpiod #{hostname}:#{port}")
     opts = [:binary, active: false]
-    case :gen_tcp.connect('localhost', 8888, opts, 1000) do
+    case :gen_tcp.connect(hostname, port, opts, 1000) do
       {:ok, socket} -> {:ok, socket}
       {:error, _} ->
         Process.sleep(2000)
