@@ -22,7 +22,9 @@ def deps(target) do
 
 # Usage
 
-Adding pigpiox as a dependency to your system will automatically launch the pigpio daemon and open a socket to communicate with it. To interact with pigpiod, Pigpiox provides various modules exposing different areas of functionality:
+Adding pigpiox as a dependency to your system will automatically launch the pigpio daemon and open a socket to communicate with it. To interact with pigpiod, Pigpiox provides various modules exposing different areas of functionality.
+
+All documentation available on [hexdocs](https://hexdocs.pm/pigpiox/).
 
 ## GPIO
 
@@ -77,7 +79,38 @@ The `Pigpiox.Clock` module provides functions that allow you to set a clock on r
 Pigpiox.Clock.hardware_clk(gpio, 2_500_000)
 ```
 
-All documentation available on [hexdocs](https://hexdocs.pm/pigpiox/).
+## Pulse-width modulation (PWM)
+
+The [`Pigpiox.Pwm` module](https://hexdocs.pm/pigpiox/Pigpiox.Pwm.html#content) provides functions that allow you to build and send waveforms with pigpiod.
+According to [Raspberry Pi's GPIO usage documentation](https://www.raspberrypi.org/documentation/usage/gpio/), here are the pins PWM is avaliable on:
+
+- Software PWM: all pins
+- Hardware PWM: GPIO12, GPIO13, GPIO18, GPIO19
+
+### Software PWM
+
+Max value for `level` is `255`. Here's an example of changing the brightness of an LED using software PWM.
+
+```elixir
+gpio = 12
+Pigpiox.Pwm.gpio_pwm(gpio, 255) # 100%
+Pigpiox.Pwm.gpio_pwm(gpio, 127) # 50%
+Pigpiox.Pwm.gpio_pwm(gpio, 25)  # 10%
+Pigpiox.Pwm.gpio_pwm(gpio, 2)   # 1%
+```
+
+### Hardware PWM
+
+Max value for `level` is `1_000_000`. Here's an example of changing the brightness of an LED using hardware PWM.
+
+```elixir
+gpio = 12
+frequency = 800
+Pigpiox.Pwm.hardware_pwm(gpio, frequency, 1_000_000) # 100%
+Pigpiox.Pwm.hardware_pwm(gpio, frequency, 500_000)   # 50%
+Pigpiox.Pwm.hardware_pwm(gpio, frequency, 100_000)   # 10%
+Pigpiox.Pwm.hardware_pwm(gpio, frequency, 10_000)    # 1%
+```
 
 # Contributions
 
