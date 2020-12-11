@@ -115,6 +115,19 @@ defmodule Pigpiox.Waveform do
   end
 
   @doc """
+  Starts a repeating waveform in sync mode, by its id.
+
+  The sync mode waits for the current waveform to reach the end of a cycle or
+  finish before starting the new waveform.
+
+  Returns the number of DMA control blocks used in the waveform.
+  """
+  @spec repeat_sync(non_neg_integer) :: {:ok, non_neg_integer} | {:error, atom}
+  def repeat_sync(wave_id) do
+    Pigpiox.Socket.command(:waveform_transmit_mode, wave_id, 3)
+  end
+
+  @doc """
   Returns the length in microseconds of the current waveform.
   """
   @spec get_micros() :: {:ok, non_neg_integer} | {:error, atom}
