@@ -1,34 +1,37 @@
 # Pigpiox
 
+[![Hex version](https://img.shields.io/hexpm/v/pigpiox.svg "Hex version")](https://hex.pm/packages/pigpiox)
+[![API docs](https://img.shields.io/hexpm/v/pigpiox.svg?label=hexdocs)](https://hexdocs.pm/pigpiox/Circuits.GPIO.html)
+
 Pigpiox is a wrapper around pigpiod for the Raspberry Pi. For all of pigpio's features, check out its [documentation](http://abyz.me.uk/rpi/pigpio/).
 
-
-# Requirements
+## Requirements
 
 To use Pigpiox, pigpiod must be included in your firmware. Currently, this is included by default on `nerves_system_rpi0`, but not on other Pi systems.
 
 If you'd like to use Pigpiox on one of those systems, customize the nerves system you're interested in, and add `BR2_PACKAGE_PIGPIO=y` to its `nerves_defconfig`.
 
-# Installation
+## Installation
 
 In your firmware's `mix.exs`, add `pigpiox` to your deps for your system target:
 
 ```elixir
-def deps(target) do
-  [ system(target),
+def deps do
+  [
     {:pigpiox, "~> 0.1"}
   ]
+end
 ```
 
-# Usage
+## Usage
 
 Adding pigpiox as a dependency to your system will automatically launch the pigpio daemon and open a socket to communicate with it. To interact with pigpiod, Pigpiox provides various modules exposing different areas of functionality.
 
 All documentation available on [hexdocs](https://hexdocs.pm/pigpiox/).
 
-## GPIO
+### GPIO
 
-### Basic functionality
+#### Basic functionality
 
 The `Pigpiox.GPIO` provides basic GPIO functionality. Here's an example of reading and writing a GPIO:
 
@@ -42,7 +45,7 @@ Pigpiox.GPIO.set_mode(gpio, :output)
 Pigpiox.GPIO.write(gpio, 1)
 ```
 
-### Watching a GPIO
+#### Watching a GPIO
 
 When reading a GPIO, often it's useful to know immediately when its level changes, instead of having to constantly poll it. Here's an example:
 
@@ -52,7 +55,7 @@ When reading a GPIO, often it's useful to know immediately when its level change
 
 After setting up a watch on a GPIO pin, the calling process will receive messages of the format `{:gpio_leveL_change, gpio, level}` as its level change.
 
-## Waveforms
+### Waveforms
 
 The `Pigpiox.Waveform` module provides functions that allow you to create and send waveforms on the Raspberry Pi. Here's an example of pulsing a GPIO on and off every 500ms:
 
@@ -71,7 +74,7 @@ Pigpiox.GPIO.set_mode(gpio, :output)
 Pigpiox.Waveform.repeat(wave_id)
 ```
 
-## Clock
+### Clock
 
 The `Pigpiox.Clock` module provides functions that allow you to set a clock on reserved pin.
 
@@ -112,6 +115,6 @@ Pigpiox.Pwm.hardware_pwm(gpio, frequency, 100_000)   # 10%
 Pigpiox.Pwm.hardware_pwm(gpio, frequency, 10_000)    # 1%
 ```
 
-# Contributions
+## Contributions
 
 This library is still in a very early stage, and I'd appreciate any and all contributions. In particular, a short-term goal is getting feature parity with the [python](http://abyz.co.uk/rpi/pigpio/python.html) pigpiod client library.
