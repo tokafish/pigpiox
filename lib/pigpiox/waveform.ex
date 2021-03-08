@@ -21,6 +21,11 @@ defmodule Pigpiox.Waveform do
     defstruct gpio_on: 0, gpio_off: 0, delay: 0
   end
 
+  defmodule ChainElement do
+    @moduledoc false
+    defstruct content: [], repeat: 1
+  end
+
   @typedoc """
   A pulse used in constructing a waveform. Specifies the GPIO that should be turned on, the GPIO that should be turned off,
   and the delay before the next pulse.
@@ -28,6 +33,8 @@ defmodule Pigpiox.Waveform do
   At least one field is required to be set.
   """
   @type pulse :: %Pulse{}
+
+  @type chain_element :: %ChainElement{}
 
   @doc """
   Adds a list of pulses to the current waveform
@@ -40,6 +47,29 @@ defmodule Pigpiox.Waveform do
       [mask(pulse.gpio_on), mask(pulse.gpio_off), pulse.delay]
     end
     Pigpiox.Socket.command(:waveform_add_generic, 0, 0, extents)
+  end
+
+  @doc """
+  Chain waveform
+
+  Returns ok or an error.
+  """
+  @spec chain(chain_element :: chain_element) :: {:ok, 0} | {:error, atom}
+  def chain(chain_element) do
+    extents = chain_elements_to_list(chain_element)
+    Pigpiox.Socket.command(:waveform_chain, 0, 0, extents, 8)
+  end
+
+  defp chain_elements_to_list(wave_id) when is_integer(wave_id), do: [wave_id]
+
+  defp chain_elements_to_list(%ChainElement{content: content, repeat: repeat}) do
+    content = Enum.flat_map(content, &chain_elements_to_list/1)
+    [255, 0] ++ content ++ chain_element_repeat_to_list(repeat)
+  end
+
+  defp chain_element_repeat_to_list(:forever), do: [255, 3]
+  defp chain_element_repeat_to_list(repeat) do
+    [255, 1] ++ :erlang.binary_to_list(<<repeat::little-unsigned-integer-size(16)>>)
   end
 
   @doc """

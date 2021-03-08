@@ -71,6 +71,49 @@ Pigpiox.GPIO.set_mode(gpio, :output)
 Pigpiox.Waveform.repeat(wave_id)
 ```
 
+## Waveform chains
+
+You can compose more complex waveform by chaining them.
+For example, pulsing a GPIO on and off every 500 ms for 10 times and then 50 ms for 100 times and this forever. Chain can be nested.
+
+```elixir
+pulses_500 = [
+  %Pigpiox.Waveform.Pulse{gpio_on: gpio, delay: 500_000},
+  %Pigpiox.Waveform.Pulse{gpio_off: gpio, delay: 500_000}
+]
+
+Pigpiox.Waveform.add_generic(pulses_500)
+
+{:ok, wave_500} = Pigpiox.Waveform.create()
+
+pulses_50 = [
+  %Pigpiox.Waveform.Pulse{gpio_on: gpio, delay: 50_000},
+  %Pigpiox.Waveform.Pulse{gpio_off: gpio, delay: 50_000}
+]
+
+Pigpiox.Waveform.add_generic(pulses_50)
+
+{:ok, wave_50} = Pigpiox.Waveform.create()
+
+Pigpiox.GPIO.set_mode(gpio, :output)
+
+Pigpiox.Waveform.chain(%Pigpiox.Waveform.ChainElement{
+  content: [
+    %Pigpiox.Waveform.ChainElement{
+      content: [wave_500],
+      repeat: 10
+    },
+    %Pigpiox.Waveform.ChainElement{
+      content: [wave_50],
+      repeat: 100
+    }
+  ],
+  repeat: :forever
+})
+
+Pigpiox.Waveform.repeat(wave_id)
+```
+
 ## Clock
 
 The `Pigpiox.Clock` module provides functions that allow you to set a clock on reserved pin.
