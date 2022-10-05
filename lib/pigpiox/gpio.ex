@@ -12,6 +12,13 @@ defmodule Pigpiox.GPIO do
 	@gpio_modes Map.keys(@gpio_modes_map)
 	@inverted_gpio_modes_map for {key, val} <- @gpio_modes_map, into: %{}, do: {val, key}
 
+  @gpio_pull_map %{
+    off: 0,
+    down: 1,
+    up: 2
+  }
+  @gpio_pull Map.keys(@gpio_pull_map)
+
   @moduledoc """
   This module exposes pigpiod's basic GPIO functionality.
   """
@@ -20,6 +27,11 @@ defmodule Pigpiox.GPIO do
   A mode that a GPIO pin can be in. Returned by `get_mode/1` and passed to `set_mode/2`.
   """
   @type mode :: :input | :output | :alt0 | :alt1 | :alt2 | :alt3 | :alt4 | :alt5
+
+  @typedoc """
+  GPIO pull settings, for `set_pull/2`
+  """
+  @type pull :: :up | :down | :off
 
   @typedoc """
   The state of a GPIO pin - 0 for low, 1 for high.
@@ -50,6 +62,20 @@ defmodule Pigpiox.GPIO do
       error -> error
     end
 	end
+
+  @doc """
+  Sets a pull for a specific GPIO `pin`. `pin` must be a valid GPIO pin number for the device, with some exceptions.
+  See pigpio's [documentation](http://abyz.co.uk/rpi/pigpio/index.html) for more details.
+
+  `pull` can be any of `t:pull/0`.
+  """
+  @spec set_pull(pin :: integer, pull) :: :ok | {:error, atom}
+  def set_pull(pin, pull) when pull in @gpio_pull do
+    case Pigpiox.Socket.command(:set_pull, pin, @gpio_pull_map[pull]) do
+      {:ok, _} -> :ok
+      error -> error
+    end
+  end
 
   @doc """
   Returns the current level for a specific GPIO `pin`

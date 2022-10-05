@@ -4,6 +4,7 @@ defmodule Pigpiox.Command do
   @commands %{
     set_mode:               0,
     get_mode:               1,
+    set_pull:               2,
     gpio_read:              3,
     gpio_write:             4,
     set_servo_pulsewidth:   8,
