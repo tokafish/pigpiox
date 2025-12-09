@@ -1,16 +1,16 @@
 defmodule Pigpiox.GPIO do
-	@gpio_modes_map %{
-		input:  0,
-		output: 1,
-		alt0:   4,
-		alt1:   5,
-		alt2:   6,
-		alt3:   7,
-		alt4:   3,
-		alt5:   2
-	}
-	@gpio_modes Map.keys(@gpio_modes_map)
-	@inverted_gpio_modes_map for {key, val} <- @gpio_modes_map, into: %{}, do: {val, key}
+  @gpio_modes_map %{
+    input: 0,
+    output: 1,
+    alt0: 4,
+    alt1: 5,
+    alt2: 6,
+    alt3: 7,
+    alt4: 3,
+    alt5: 2
+  }
+  @gpio_modes Map.keys(@gpio_modes_map)
+  @inverted_gpio_modes_map for {key, val} <- @gpio_modes_map, into: %{}, do: {val, key}
 
   @moduledoc """
   This module exposes pigpiod's basic GPIO functionality.
@@ -28,28 +28,28 @@ defmodule Pigpiox.GPIO do
 
   @doc """
   Sets a mode for a specific GPIO `pin`. `pin` must be a valid GPIO pin number for the device, with some exceptions.
-  See pigpio's [documentation](http://abyz.co.uk/rpi/pigpio/index.html) for more details.
+  See pigpio's [documentation](http://abyz.me.uk/rpi/pigpio/index.html) for more details.
 
   `mode` can be any of `t:mode/0`.
   """
   @spec set_mode(pin :: integer, mode) :: :ok | {:error, atom}
-	def set_mode(pin, mode) when mode in @gpio_modes do
+  def set_mode(pin, mode) when mode in @gpio_modes do
     case Pigpiox.Socket.command(:set_mode, pin, @gpio_modes_map[mode]) do
       {:ok, _} -> :ok
       error -> error
     end
-	end
+  end
 
   @doc """
   Returns the current mode for a specific GPIO `pin`
   """
   @spec get_mode(pin :: integer) :: {:ok, mode | :unknown} | {:error, atom}
-	def get_mode(pin) do
+  def get_mode(pin) do
     case Pigpiox.Socket.command(:get_mode, pin) do
       {:ok, result} -> {:ok, @inverted_gpio_modes_map[result] || :unknown}
       error -> error
     end
-	end
+  end
 
   @doc """
   Returns the current level for a specific GPIO `pin`

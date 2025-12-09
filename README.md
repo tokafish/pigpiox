@@ -114,4 +114,4 @@ Pigpiox.Pwm.hardware_pwm(gpio, frequency, 10_000)    # 1%
 
 # Contributions
 
-This library is still in a very early stage, and I'd appreciate any and all contributions. In particular, a short-term goal is getting feature parity with the [python](http://abyz.co.uk/rpi/pigpio/python.html) pigpiod client library.
+This library is still in a very early stage, and I'd appreciate any and all contributions. In particular, a short-term goal is getting feature parity with the [python](http://abyz.me.uk/rpi/pigpio/python.html) pigpiod client library.
