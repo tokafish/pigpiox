@@ -35,22 +35,23 @@ defmodule Pigpiox.Socket do
   @doc """
   Runs a command via pigpiod.
   """
-  @spec command(type :: atom, param_one :: integer, param_two :: integer, extents :: list(integer)) :: command_result
-  def command(cmd, p1 \\ 0, p2 \\ 0, extents \\ [])
-  def command(cmd, p1, p2, extents) do
+  @spec command(type :: atom, param_one :: integer, param_two :: integer, extents :: list(integer), bits_size :: integer) :: command_result
+  def command(cmd, p1 \\ 0, p2 \\ 0, extents \\ [], bits_size \\ 32)
+  def command(cmd, p1, p2, extents, bits_size) do
     cmd_code = Pigpiox.Command.code(cmd)
-    GenServer.call(__MODULE__, {:do_command, cmd_code, p1, p2, extents})
+    GenServer.call(__MODULE__, {:do_command, cmd_code, p1, p2, extents, bits_size})
   end
 
-  @spec handle_call({:do_command, integer, integer, integer, list(integer)}, sender :: term, state) :: {:reply, command_result, state}
-  def handle_call({:do_command, command, p1, p2, extents}, _, socket) do
+  @spec handle_call({:do_command, integer, integer, integer, list(integer), integer}, sender :: term, state) :: {:reply, command_result, state}
+  def handle_call({:do_command, command, p1, p2, extents, bits_size}, _, socket) do
+    extents_length = length(extents) * round(bits_size / 8)
     base_msg  = <<command :: native-unsigned-integer-size(32),
                   p1 :: native-unsigned-integer-size(32),
                   p2 :: native-unsigned-integer-size(32),
-                  length(extents) * 4 :: native-unsigned-integer-size(32)>>
+                  extents_length :: native-unsigned-integer-size(32)>>
 
     msg = Enum.reduce(extents, base_msg, fn extent, accum ->
-      accum <> << extent :: native-unsigned-integer-size(32) >>
+      accum <> << extent :: native-unsigned-integer-size(bits_size) >>
     end)
     :ok = :gen_tcp.send(socket, msg)
     {
